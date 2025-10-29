@@ -43,7 +43,7 @@ define('DB_LOG', false);
  *
  * @var string
  */
-define('INIT_LANGUAGE', 'th');
+define('INIT_LANGUAGE', 'ru');
 /**
  * เปิด/ปิดการใช้งาน Session บน Database
  * ต้องติดตั้งตาราง sessions ด้วย

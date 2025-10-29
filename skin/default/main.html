@@ -1,24 +1,42 @@
-<div class="bg_color">
-  <header class="header bg_header">
+<div class="bg_color layout-shell">
+  <header class="header bg_header elevate-surface">
     <div class="top_header">
-      <h2 class="logo_color one_line"><a href="index.php" id=logo title="{WEBTITLE}" class="{LOGO_CLASS}">{LOGO}</a></h2>
-      <div class="header_btn_wrapper">
+      <div class="header_identity">
+        <h2 class="logo_color one_line brandmark">
+          <a href="index.php" id=logo title="{WEBTITLE}" class="{LOGO_CLASS}">{LOGO}</a>
+        </h2>
+      </div>
+      <div class="header_actions" role="group" aria-label="{WEBTITLE}">
         {LINE}
-        <a id=dark_mode class="header_btn {DARKMODE}" title="{LNG_Dark mode}"></a>
-        <div class="header_btn language-menu" data-text="{LANGUAGE}">
+        <a id=dark_mode class="header_btn header_btn--ghost {DARKMODE}" title="{LNG_Dark mode}" aria-label="{LNG_Dark mode}">
+          <span class="header_btn-icon" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3.75a.75.75 0 0 1 .75-.75 6.75 6.75 0 1 1-6.75 6.75.75.75 0 0 1 .75-.75 5.25 5.25 0 0 0 5.25-5.25Z" />
+              <path d="M12 5.25a6.75 6.75 0 1 0 6.75 6.75.75.75 0 0 0-1.5 0 5.25 5.25 0 1 1-5.25-5.25.75.75 0 0 0 0-1.5Z" />
+            </svg>
+          </span>
+          <span class="sr-only">{LNG_Dark mode}</span>
+        </a>
+        <div class="header_btn header_btn--menu language-menu" data-text="{LANGUAGE}" title="{LANGUAGE}" aria-haspopup="true">
+          <span class="header_btn-icon" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3a9 9 0 1 0 9 9 9.01 9.01 0 0 0-9-9Zm6.45 8h-2.71a14.55 14.55 0 0 0-.89-4.26A7.53 7.53 0 0 1 18.45 11ZM12 4.5a12.94 12.94 0 0 1 1.88 4.5h-3.76A12.94 12.94 0 0 1 12 4.5Zm-3.7.24A14.55 14.55 0 0 0 7.26 11H4.55a7.53 7.53 0 0 1 3.75-6.26ZM4.55 13h2.71a14.55 14.55 0 0 0 .89 4.26A7.53 7.53 0 0 1 4.55 13Zm7.45 6.5a12.94 12.94 0 0 1-1.88-4.5h3.76A12.94 12.94 0 0 1 12 19.5Zm1.7-.24a14.55 14.55 0 0 0 1.04-4.76h2.71a7.53 7.53 0 0 1-3.75 6.26Z" />
+            </svg>
+          </span>
+          <span class="header_btn-label">{LANGUAGE}</span>
           <ul>{LANGUAGES}</ul>
         </div>
-        <span>{LOGIN}</span>
+        <span class="header-account" aria-live="polite">{LOGIN}</span>
       </div>
     </div>
     <div class="menu_wrapper menu_bg">
-      <nav id=topmenu class="topmenu slidemenu">
+      <nav id=topmenu class="topmenu slidemenu nav-pill">
         <ul>{MENUS}</ul>
       </nav>
     </div>
   </header>
-  <div id="skip" class="clear">
-    <main id="content">{CONTENT}</main>
+  <div id="skip" class="clear layout-main">
+    <main id="content" class="surface-card animate-rise">{CONTENT}</main>
   </div>
 </div>
 <script>

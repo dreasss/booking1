@@ -92,11 +92,11 @@ class Config
     public $email_use_phpMailer = 1;
 
     /**
-     * The list of supported languages (found in the language/ directory). The default language is 'en' (English).
+     * The list of supported languages (found in the language/ directory). The default language is 'ru' (Russian).
      *
      * @var array
      */
-    public $languages = ['th'];
+    public $languages = ['ru', 'en'];
 
     /**
      * The list of fields from the member table used for login.

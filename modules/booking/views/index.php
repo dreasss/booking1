@@ -182,7 +182,7 @@ class View extends \Booking\Tools\View
         if ($item['today'] == 1) {
             $prop->class = 'bg3';
         }
-        $thumb = is_file(ROOT_PATH.DATA_FOLDER.'booking/'.$item['room_id'].self::$cfg->stored_img_type) ? WEB_URL.DATA_FOLDER.'booking/'.$item['room_id'].self::$cfg->stored_img_type : WEB_URL.'modules/booking/img/noimage.png';
+        $thumb = is_file(ROOT_PATH.DATA_FOLDER.'booking/'.$item['room_id'].self::$cfg->stored_img_type) ? WEB_URL.DATA_FOLDER.'booking/'.$item['room_id'].self::$cfg->stored_img_type : WEB_URL.'modules/booking/img/noimage.svg';
         $item['id'] = '<img src="'.$thumb.'" style="max-height:4em;max-width:8em;" alt=thumbnail>';
         $topic = [];
         foreach ($this->category->items() as $k => $v) {
