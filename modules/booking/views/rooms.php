@@ -97,7 +97,7 @@ class View extends \Gcms\View
      */
     public function onRow($item, $o, $prop)
     {
-        $thumb = is_file(ROOT_PATH.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type) ? WEB_URL.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type : WEB_URL.'modules/booking/img/noimage.png';
+        $thumb = is_file(ROOT_PATH.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type) ? WEB_URL.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type : WEB_URL.'modules/booking/img/noimage.svg';
         $item['id'] = '<img src="'.$thumb.'" style="max-height:4em;max-width:8em;" alt=thumbnail>';
         $item['name'] = '<span class="term" style="background-color:'.$item['color'].'">'.$item['name'].'</span><span class="one_line">'.strip_tags($item['detail']).'</span>';
         return $item;

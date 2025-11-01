@@ -50,8 +50,6 @@ class Validator extends \Kotchasan\KBase
      * Returns an array [ext, width, height, mime] of the image if it is an image,
      * or false if it is not an image.
      *
-     * @assert (['gif'], ['name' => 'blank.GIF', 'tmp_name' => ROOT_PATH.'skin/img/blank.gif']) [==] ['ext' => 'gif', 'width' => 1, 'height' => 1, 'mime' => 'image/gif']
-     *
      * @param array $excepts     Accepted file types, e.g. array('jpg', 'gif', 'png')
      * @param array $file_upload Value from $_FILES
      *

@@ -240,11 +240,8 @@ class View extends \Gcms\View
             $avatar = '<img class=user_icon src="'.$avatar.'" alt="{LNG_Avatar}">';
         } else {
             $username = empty($item['username']) ? $item['name'] : $item['username'];
-            if ($username == '') {
-                $avatar = '<img class=user_icon src="'.WEB_URL.'skin/img/noicon.png" alt="{LNG_Avatar}">';
-            } else {
-                $avatar = '<span class=user_icon data-letters="'.mb_substr($username, 0, 2).'"></span>';
-            }
+            $letters = trim($username) === '' ? '??' : mb_substr($username, 0, 2);
+            $avatar = '<span class=user_icon data-letters="'.$letters.'"></span>';
         }
         $item['username'] = empty($item['username']) ? '' : '<a id=login_'.$item['id'].' class=icon-signin title="{LNG_Login as} '.$item['name'].'">'.$item['username'].'</a>';
         $item['id'] = $avatar;

@@ -67,9 +67,12 @@ class Controller extends \Gcms\Controller
         $page = \Index\Main\Controller::create()->execute($request);
         // ตัวเลือกภาษา
         $languages = '';
+        $current = strtolower(Language::name());
         foreach (Language::installedLanguage() as $item) {
-            $t = '{LNG_Language} '.strtoupper($item);
-            $languages .= '<li><a id=lang_'.$item.' href="'.$page->canonical()->withParams(['lang' => $item], true).'" aria-label="'.$t.'"  style="background-image:url('.WEB_URL.'language/'.$item.'.gif)" tabindex=1>&nbsp;</a></li>';
+            $code = strtoupper($item);
+            $t = '{LNG_Language} '.$code;
+            $active = $item === $current ? ' is-active' : '';
+            $languages .= '<li><a id=lang_'.$item.' class="lang-option'.$active.'" href="'.$page->canonical()->withParams(['lang' => $item], true).'" aria-label="'.$t.'" data-lang="'.$code.'" tabindex=1>'.$code.'</a></li>';
         }
         if (is_file(ROOT_PATH.DATA_FOLDER.'images/logo.png')) {
             $logo = '<img src="'.WEB_URL.DATA_FOLDER.'images/logo.png" alt="{WEBTITLE}">';

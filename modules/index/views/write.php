@@ -34,7 +34,7 @@ class View extends \Gcms\View
     public function render(Request $request, $params)
     {
         // ภาษา
-        $language = $request->request('language', 'th')->filter('a-z');
+        $language = $request->request('language', 'ru')->filter('a-z');
         if (file_exists(ROOT_PATH.DATA_FOLDER.'pages/'.$params['src'].'_'.$language.'.html')) {
             // ภาษาที่เลือก
             $content = file_get_contents(ROOT_PATH.DATA_FOLDER.'pages/'.$params['src'].'_'.$language.'.html');
