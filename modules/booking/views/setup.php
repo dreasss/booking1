@@ -127,7 +127,7 @@ class View extends \Gcms\View
     {
         $item['name'] = '<span class="term" style="background-color:'.$item['color'].';color:#fff;">'.$item['name'].'</span>';
         $item['published'] = '<a id=published_'.$item['id'].' class="icon-published'.$item['published'].'" title="'.$this->publisheds[$item['published']].'"></a>';
-        $thumb = is_file(ROOT_PATH.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type) ? WEB_URL.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type : WEB_URL.'modules/booking/img/noimage.png';
+        $thumb = is_file(ROOT_PATH.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type) ? WEB_URL.DATA_FOLDER.'booking/'.$item['id'].self::$cfg->stored_img_type : WEB_URL.'modules/booking/img/noimage.svg';
         $item['id'] = '<img src="'.$thumb.'" style="max-height:2em;max-width:4em;" alt=thumbnail>';
         return $item;
     }

@@ -27,11 +27,8 @@ class View extends \Gcms\View
             $usericon = '<img src="'.WEB_URL.DATA_FOLDER.'avatar/'.$login['id'].self::$cfg->stored_img_type.'" class=user_icon alt="{DISPLAYNAME}">{DISPLAYNAME}';
         } else {
             $username = empty($login['username']) ? $login['name'] : $login['username'];
-            if ($username == '') {
-                $usericon = '<img src="'.WEB_URL.'skin/img/noicon.png" class=user_icon alt="{DISPLAYNAME}">{DISPLAYNAME}';
-            } else {
-                $usericon = '<span class="user_icon" data-letters="'.mb_substr($username, 0, 2).'" title="{DISPLAYNAME}">{DISPLAYNAME}</span>';
-            }
+            $letters = trim($username) === '' ? '??' : mb_substr($username, 0, 2);
+            $usericon = '<span class="user_icon" data-letters="'.$letters.'" title="{DISPLAYNAME}">{DISPLAYNAME}</span>';
         }
         // member.html
         $template = Template::create('', '', 'member');

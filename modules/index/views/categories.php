@@ -131,9 +131,10 @@ class View extends \Gcms\View
             foreach ($this->installedlanguage as $lng) {
                 $item[$lng] = Form::text([
                     'name' => $lng.'[]',
-                    'labelClass' => 'g-input',
-                    'value' => isset($item[$lng]) ? $item[$lng] : $item[''],
-                    'style' => 'background-image:url(../language/'.$lng.'.gif)'
+                    'label' => strtoupper($lng),
+                    'labelClass' => 'g-input lang-label',
+                    'class' => 'language-input',
+                    'value' => isset($item[$lng]) ? $item[$lng] : $item['']
                 ])->render();
             }
         }

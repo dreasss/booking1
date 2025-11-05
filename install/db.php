@@ -56,10 +56,9 @@ class Db
     }
 
     /**
-     * ตรวจสอบฐานข้อมูล
-     * คืนค่า true ถ้ามีอยู่แล้ว
+     * Check if the database schema already exists.
      *
-     * @param string $database_name ชื่อฐานข้อมูล
+     * @param string $database_name Database name
      *
      * @return bool
      */
@@ -70,10 +69,9 @@ class Db
     }
 
     /**
-     * ตรวจสอบตาราง
-     * คืนค่า true ถ้ามีอยู่แล้ว
+     * Verify that a table exists in the database.
      *
-     * @param string $table_name ชื่อตาราง
+     * @param string $table_name Table name
      *
      * @return bool
      */
@@ -84,11 +82,10 @@ class Db
     }
 
     /**
-     * ตรวจสอบฟิลด์
-     * คืนค่า true ถ้ามีอยู่แล้ว
+     * Check if a column exists on the specified table.
      *
-     * @param string $table_name ชื่อตาราง
-     * @param string $field ชื่อฟิลด์
+     * @param string $table_name Table name
+     * @param string $field      Column name
      *
      * @return bool
      */
@@ -99,11 +96,10 @@ class Db
     }
 
     /**
-     * ตรวจสอบ index ซ้ำ
-     * คืนค่า true ถ้ามีอยู่แล้ว
+     * Determine whether a specific index already exists.
      *
-     * @param string $table_name ชื่อตาราง
-     * @param string $index ชื่อ Index
+     * @param string $table_name Table name
+     * @param string $index      Index name
      *
      * @return bool
      */
@@ -114,12 +110,11 @@ class Db
     }
 
     /**
-     * ตรวจสอบชนิดคอลัมน์ และ ฟิลด์
-     * คืนค่า true ถ้าเป็นชนิดที่ต้องการ
+     * Check that a column matches the expected data type.
      *
-     * @param string $table_name ชื่อตาราง
-     * @param string $field ชื่อฟิลด์
-     * @param string $type ชนิดของฟิลด์ เช่น VARCHAR FLOAT INT DATE
+     * @param string $table_name Table name
+     * @param string $field      Column name
+     * @param string $type       Expected column type prefix
      *
      * @return bool
      */
@@ -130,11 +125,10 @@ class Db
     }
 
     /**
-     * ค้นหาข้อมูลที่กำหนดเองเพียงรายการเดียว
-     * พบคืนค่ารายการที่พบเพียงรายการเดียว ไม่พบหรือมีข้อผิดพลาดคืนค่า false
+     * Fetch the first row that matches the provided conditions.
      *
-     * @param string $table      ชื่อตาราง
-     * @param array  $conditions ข้อความที่ต้องการค้นหา array(column => value, column => value)
+     * @param string $table      Table name
+     * @param array  $conditions Key-value pairs used in the where clause
      *
      * @return object|bool
      */
@@ -148,14 +142,13 @@ class Db
     }
 
     /**
-     * ค้นหาข้อมูลที่กำหนดเอง
-     * คืนค่ารายการที่พบ (array) มีข้อผิดพลาดคืนค่า false
+     * Search for rows that satisfy the provided conditions.
      *
-     * @param string $table      ชื่อตาราง
-     * @param array  $conditions ข้อความที่ต้องการค้นหา array(column => value, column => value)
-     * @param int    $limit      จำนวนผลลัพท์ที่ต้องการ ค่าเริ่มต้น หมายถึงคืนค่าทุกรายการ
-     * @param int    $start      ข้อมูลเริ่มต้นที่ต้องการ ค่าเริ่มต้น หมายถึงคืนค่าตั้งแต่รายการแรก
-     * @param string $sort       คอลัมน์เรียงลำดับ เช่น id DESC,name ASC
+     * @param string $table      Table name
+     * @param array  $conditions Filter definition
+     * @param int    $limit      Maximum rows (0 for all)
+     * @param int    $start      Offset for pagination
+     * @param string $sort       Sort expression (e.g. id DESC)
      *
      * @return array|bool
      */
@@ -201,11 +194,10 @@ class Db
     }
 
     /**
-     * ฟังก์ชั่นเพิ่มข้อมูลใหม่ลงในตาราง
-     * สำเร็จ คืนค่า id ที่เพิ่ม, ผิดพลาด คืนค่า false
+     * Insert a new row into the table.
      *
-     * @param string $table ชื่อตาราง
-     * @param array  $save  ข้อมูลที่ต้องการบันทึก array(column => value, column => value)
+     * @param string $table Table name
+     * @param array  $save  Data to persist (column => value)
      *
      * @return int|bool
      */
@@ -225,12 +217,11 @@ class Db
     }
 
     /**
-     * แก้ไขข้อมูล
-     * สำเร็จ คืนค่า true
+     * Update an existing row using the provided condition.
      *
-     * @param string    $table     ชื่อตาราง
-     * @param array|int $condition id ที่ต้องการแก้ไข หรือข้อความค้นหารูปแอเรย์ [filed=>value]
-     * @param array     $save      ข้อมูลที่ต้องการบันทึก
+     * @param string       $table     Table name
+     * @param array|int    $condition Primary key or where definition
+     * @param array<string,mixed> $save Updated data set
      *
      * @return bool
      */
@@ -254,12 +245,11 @@ class Db
     }
 
     /**
-     * ลบข้อมูล
-     * สำเร็จ คืนค่า true
+     * Delete rows that match the provided condition.
      *
-     * @param string    $table     ชื่อตาราง
-     * @param array|int $condition id ที่ต้องการ หรือข้อความค้นหารูปแอเรย์ [filed=>value]
-     * @param int       $limit     จำนวนรายการที่ต้องการลบ ลบทุกลายการที่พบ , มากกว่า (ค่าเริ่มต้น 1) ลบตามจำนวนที่เลือก
+     * @param string    $table     Table name
+     * @param array|int $condition Primary key or where definition
+     * @param int       $limit     Rows to remove (1 by default)
      *
      * @return bool
      */
@@ -281,10 +271,10 @@ class Db
     }
 
     /**
-     * คืนค่า query where
+     * Build the WHERE clause used by update and delete helpers.
      *
-     * @param array|int $condition id ที่ต้องการ หรือข้อความค้นหารูปแอเรย์ [filed=>value]
-     * @param array     $values    ตัวแปรสำหรับรับค่าสำหรับการ prepare กลับ
+     * @param array|int $condition Primary key or where definition
+     * @param array     $values    Reference to bound values array
      *
      * @return string
      */
@@ -318,10 +308,9 @@ class Db
     }
 
     /**
-     * ประมวลผลคำสั่ง SQL ที่ไม่ต้องการผลลัพท์ เช่น CREATE INSERT UPDATE
-     * สำเร็จ คืนค่าจำนวนแถวที่ทำรายการ มีข้อผิดพลาดคืนค่า false
+     * Execute a statement that does not return a result set.
      *
-     * @param string $sql
+     * @param string $sql SQL command
      *
      * @return int|bool
      */
@@ -333,12 +322,11 @@ class Db
     }
 
     /**
-     * ประมวลผลคำสั่ง SQL สำหรับสอบถามข้อมูล คืนค่าผลลัพท์เป็นแอรย์ของข้อมูลที่ตรงตามเงื่อนไข
-     * คืนค่าผลการทำงานเป็น record ของข้อมูลทั้งหมดที่ตรงตามเงื่อนไข ไม่พบข้อมูลคืนค่าเป็น array ว่างๆ ผิดพลาดคืนค่า false
+     * Execute a select statement and return the resulting rows.
      *
-     * @param string $sql    query string
-     * @param bool   $array  false (default) คืนค่าเป็น object, true คืนค่าเป็นแอเรย์
-     * @param array  $values สำหรับ query ที่ใช้ prepare
+     * @param string $sql    Query string
+     * @param bool   $array  When true rows are returned as arrays
+     * @param array  $values Bind values for prepared statements
      *
      * @return array|bool
      */
@@ -367,8 +355,7 @@ class Db
     }
 
     /**
-     * คืนค่าข้อความผิดพลาด
-     * ไม่มี คืนค่าว่าง
+     * Get the last database error message.
      *
      * @return string
      */

@@ -5,3 +5,4 @@ datas/
 settings/*
 requirement/*
 skin/kanit/*
+dist/*.zip

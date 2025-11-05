@@ -136,10 +136,11 @@ class View extends \Gcms\View
             'value' => 1
         ]);
         // bg_image
+        $blankPreview = 'data:image/svg+xml;charset=UTF-8,'.rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><rect width="240" height="160" rx="24" fill="#f3f4f6"/><rect x="30" y="40" width="180" height="80" rx="16" fill="none" stroke="#c7d2fe" stroke-dasharray="12 12" stroke-width="6"/><text x="120" y="95" text-anchor="middle" font-family="Inter,Segoe UI,Arial" font-size="22" fill="#94a3b8">preview</text></svg>');
         if (is_file(ROOT_PATH.DATA_FOLDER.'images/bg_image.png')) {
             $img = WEB_URL.DATA_FOLDER.'images/bg_image.png?'.time();
         } else {
-            $img = WEB_URL.'skin/img/blank.gif';
+            $img = $blankPreview;
         }
         // bg_image
         $fieldset->add('file', [
@@ -171,7 +172,7 @@ class View extends \Gcms\View
         if (is_file(ROOT_PATH.DATA_FOLDER.'images/logo.png')) {
             $img = WEB_URL.DATA_FOLDER.'images/logo.png?'.time();
         } else {
-            $img = WEB_URL.'skin/img/blank.gif';
+            $img = $blankPreview;
         }
         // logo
         $fieldset->add('file', [

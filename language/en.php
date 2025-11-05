@@ -110,6 +110,10 @@ return array(
     'number' => 'Room No.',
     'seats' => 'Number of seats'
   ),
+  'LANGUAGE_NAMES' => array(
+    'ru' => 'Russian',
+    'en' => 'English'
+  ),
   'SEXES' => array(
     'u' => 'Not specified',
     'f' => 'Female',
@@ -120,6 +124,9 @@ return array(
     '' => 'Clear Text',
     'ssl' => 'Server using a secure connection (SSL)'
   ),
+  'Login intro' => 'Sign in to manage bookings and requests.',
+  'Switch to %s' => 'Switch to %s',
+  'Change language' => 'Change language',
   'THEME_WIDTH' => array(
     'default' => 'Default',
     'wide' => 'Wide',

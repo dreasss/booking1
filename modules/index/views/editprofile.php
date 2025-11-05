@@ -250,6 +250,7 @@ class View extends \Gcms\View
             ]);
         }
         // รูปภาพสมาชิก
+        $placeholder = 'data:image/svg+xml;charset=UTF-8,'.rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="20" fill="#e5e7eb"/><circle cx="48" cy="36" r="20" fill="#9ca3af"/><path fill="#9ca3af" d="M16 82c0-18 14-30 32-30s32 12 32 30z"/></svg>');
         foreach (self::$cfg->member_images as $key => $label) {
             // delete_$key
             $fieldset->add('checkbox', [
@@ -263,7 +264,7 @@ class View extends \Gcms\View
             if (is_file(ROOT_PATH.DATA_FOLDER.$key.'/'.$user['id'].$ext)) {
                 $img = WEB_URL.DATA_FOLDER.$key.'/'.$user['id'].$ext.'?'.time();
             } else {
-                $img = WEB_URL.'skin/img/noicon.png';
+                $img = $placeholder;
             }
             $fieldset->add('file', [
                 'id' => $key,

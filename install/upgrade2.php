@@ -3,40 +3,35 @@ if (defined('ROOT_PATH')) {
     if (empty($_POST['username']) || empty($_POST['password'])) {
         include ROOT_PATH.'install/upgrade1.php';
     } else {
+        $entries = [];
         $error = false;
-        // Database Class
+        $ok_icon = '<span class="status-icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="m6.5 11.2-2.3-2.3 1.06-1.06L6.5 9.08l4.24-4.24 1.06 1.06z"/></svg></span>';
+        $fail_icon = '<span class="status-icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="m8 6.94 3.3-3.3 1.06 1.06L9.06 8l3.3 3.3-1.06 1.06L8 9.06l-3.3 3.3-1.06-1.06L6.94 8l-3.3-3.3L4.7 3.64 8 6.94z"/></svg></span>';
+        $listItem = function ($status, $message) use (&$ok_icon, &$fail_icon) {
+            $class = $status ? 'correct' : 'incorrect';
+            $icon = $status ? $ok_icon : $fail_icon;
+            return '<li class="'.$class.'">'.$icon.'<span>'.$message.'</span></li>';
+        };
         include ROOT_PATH.'install/db.php';
-        // ค่าติดตั้งฐานข้อมูล
         $db_config = include ROOT_PATH.'settings/database.php';
         try {
             $db_config = $db_config['mysql'];
-            // เขื่อมต่อฐานข้อมูล
             $db = new Db($db_config);
         } catch (\Exception $exc) {
             $error = true;
-            echo '<h2>ความผิดพลาดในการเชื่อมต่อกับฐานข้อมูล</h2>';
-            echo '<p class=warning>ไม่สามารถเชื่อมต่อกับฐานข้อมูลของคุณได้ในขณะนี้</p>';
-            echo '<p>อาจเป็นไปได้ว่า</p>';
-            echo '<ol>';
-            echo '<li>เซิร์ฟเวอร์ของฐานข้อมูลของคุณไม่สามารถใช้งานได้ในขณะนี้</li>';
-            echo '<li>ค่ากำหนดของฐานข้อมูลไม่ถูกต้อง (ตรวจสอบไฟล์ settings/database.php)</li>';
-            echo '<li>ไม่พบฐานข้อมูลที่ต้องการติดตั้ง กรุณาสร้างฐานข้อมูลก่อน หรือใช้ฐานข้อมูลที่มีอยู่แล้ว</li>';
-            echo '<li class="incorrect">'.$exc->getMessage().'</li>';
-            echo '</ol>';
-            echo '<p>หากคุณไม่สามารถดำเนินการแก้ไขข้อผิดพลาดด้วยตัวของคุณเองได้ ให้ติดต่อผู้ดูแลระบบเพื่อขอข้อมูลที่ถูกต้อง หรือ ลองติดตั้งใหม่</p>';
-            echo '<p><a href="index.php?step=1" class="button large pink">กลับไปลองใหม่</a></p>';
+            echo '<h2>'.install_text('Ошибка подключения к базе данных', 'Database connection error').'</h2>';
+            echo '<div class="warning">'.install_text('Не удаётся подключиться к текущей базе данных. Проверьте настройки в файле <strong>settings/database.php</strong>.', 'Unable to connect to the configured database. Please verify <strong>settings/database.php</strong>.').'</div>';
+            echo '<p>'.install_text('Сообщение сервера:', 'Server message:').'</p>';
+            echo '<div class="warning">'.htmlspecialchars($exc->getMessage(), ENT_QUOTES, 'UTF-8').'</div>';
+            echo '<div class="button-bar"><a href="index.php?step=1&amp;lang='.$lang.'" class="button secondary">'.install_text('Вернуться', 'Back').'</a></div>';
         }
         if (!$error) {
-            // เชื่อมต่อฐานข้อมูลสำเร็จ
-            $content = ['<li class="correct">เชื่อมต่อฐานข้อมูลสำเร็จ</li>'];
+            $entries[] = $listItem(true, install_text('Соединение с базой данных установлено', 'Database connection established'));
             try {
-                // ตาราง user
                 $table_user = $db_config['prefix'].'_user';
                 if (empty($config['password_key'])) {
-                    // อัปเดตข้อมูลผู้ดูแลระบบ
                     $config['password_key'] = uniqid();
                 }
-                // ตรวจสอบการ login
                 updateAdmin($db, $table_user, $_POST['username'], $_POST['password'], $config['password_key']);
                 if (!$db->fieldExists($table_user, 'social')) {
                     $db->query("ALTER TABLE `$table_user` CHANGE `fb` `social` TINYINT(1) NOT NULL DEFAULT 0");
@@ -53,17 +48,10 @@ if (defined('ROOT_PATH')) {
                 $db->query("ALTER TABLE `$table_user` CHANGE `address` `address` VARCHAR(150) DEFAULT NULL");
                 $db->query("ALTER TABLE `$table_user` CHANGE `password` `password` VARCHAR(50) NOT NULL");
                 $db->query("ALTER TABLE `$table_user` CHANGE `username` `username` VARCHAR(50) DEFAULT NULL");
-                if ($db->fieldExists($table_user, 'visited')) {
-                    $db->query("ALTER TABLE `$table_user` DROP `visited`");
-                }
-                if ($db->fieldExists($table_user, 'lastvisited')) {
-                    $db->query("ALTER TABLE `$table_user` DROP `lastvisited`");
-                }
-                if ($db->fieldExists($table_user, 'session_id')) {
-                    $db->query("ALTER TABLE `$table_user` DROP `session_id`");
-                }
-                if ($db->fieldExists($table_user, 'ip')) {
-                    $db->query("ALTER TABLE `$table_user` DROP `ip`");
+                foreach (['visited', 'lastvisited', 'session_id', 'ip'] as $column) {
+                    if ($db->fieldExists($table_user, $column)) {
+                        $db->query("ALTER TABLE `$table_user` DROP `$column`");
+                    }
                 }
                 if (!$db->indexExists($table_user, 'phone')) {
                     $db->query("ALTER TABLE `$table_user` ADD INDEX (`phone`)");
@@ -88,7 +76,7 @@ if (defined('ROOT_PATH')) {
                 }
                 $db->query("ALTER TABLE `$table_user` CHANGE `salt` `salt` VARCHAR(32) CHARACTER SET utf8 DEFAULT ''");
                 $db->query("ALTER TABLE `$table_user` CHANGE `permission` `permission` TEXT CHARACTER SET utf8 DEFAULT ''");
-                $content[] = '<li class="correct">ปรับปรุงตาราง `'.$table_user.'` สำเร็จ</li>';
+                $entries[] = $listItem(true, install_text('Таблица <code>'.$table_user.'</code> обновлена', 'Table <code>'.$table_user.'</code> updated'));
                 $table_logs = $db_config['prefix'].'_logs';
                 if (!$db->tableExists($table_logs)) {
                     $sql = 'CREATE TABLE `'.$table_logs.'` (';
@@ -99,8 +87,8 @@ if (defined('ROOT_PATH')) {
                     $sql .= ' `create_date` datetime NOT NULL,';
                     $sql .= ' `reason` text DEFAULT NULL,';
                     $sql .= ' `member_id` int(11) DEFAULT NULL,';
-                    $sql .= ' `topic` text  NOT NULL,';
-                    $sql .= ' `datas` text  DEFAULT NULL';
+                    $sql .= ' `topic` text NOT NULL,';
+                    $sql .= ' `datas` text DEFAULT NULL';
                     $sql .= ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
                     $db->query($sql);
                     $sql = 'ALTER TABLE `'.$table_logs.'`';
@@ -109,11 +97,9 @@ if (defined('ROOT_PATH')) {
                     $sql .= ' ADD KEY `module` (`module`),';
                     $sql .= ' ADD KEY `action` (`action`);';
                     $db->query($sql);
-                    $sql = 'ALTER TABLE `'.$table_logs.'` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;';
-                    $db->query($sql);
-                    $content[] = '<li class="correct">สร้างตาราง `'.$table_logs.'` สำเร็จ</li>';
+                    $db->query('ALTER TABLE `'.$table_logs.'` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;');
+                    $entries[] = $listItem(true, install_text('Создан журнал событий <code>'.$table_logs.'</code>', 'Created audit log table <code>'.$table_logs.'</code>'));
                 }
-                // ตาราง category
                 $table_category = $db_config['prefix'].'_category';
                 if (!$db->tableExists($table_category)) {
                     $sql = 'CREATE TABLE `'.$table_category.'` (';
@@ -125,16 +111,14 @@ if (defined('ROOT_PATH')) {
                     $sql .= ' `published` tinyint(1) NOT NULL DEFAULT 1';
                     $sql .= ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
                     $db->query($sql);
-                    $sql = 'ALTER TABLE `'.$table_category.'` ADD KEY `type` (`type`), ADD KEY `category_id` (`category_id`), ADD KEY `language` (`language`);';
-                    $db->query($sql);
-                    $content[] = '<li class="correct">สร้างตาราง `'.$table_category.'` สำเร็จ</li>';
+                    $db->query('ALTER TABLE `'.$table_category.'` ADD KEY `type` (`type`), ADD KEY `category_id` (`category_id`), ADD KEY `language` (`language`);');
                 } else {
                     if (!$db->fieldExists($table_category, 'language')) {
                         $db->query("ALTER TABLE `$table_category` ADD `language` VARCHAR(2) NOT NULL DEFAULT '' AFTER `category_id`, ADD INDEX (`language`);");
                     }
                     $db->query("ALTER TABLE `$table_category` CHANGE `category_id` `category_id` VARCHAR(10) NOT NULL DEFAULT '0'");
-                    $content[] = '<li class="correct">ปรับปรุงตาราง `'.$table_category.'` สำเร็จ</li>';
                 }
+                $entries[] = $listItem(true, install_text('Категории обновлены', 'Category table updated'));
                 $table_user_meta = $db_config['prefix'].'_user_meta';
                 if (!$db->tableExists($table_user_meta)) {
                     $sql = 'CREATE TABLE `'.$table_user_meta.'` (';
@@ -143,39 +127,27 @@ if (defined('ROOT_PATH')) {
                     $sql .= ' `member_id` int(11) NOT NULL';
                     $sql .= ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
                     $db->query($sql);
-                    $sql = 'ALTER TABLE `'.$table_user_meta.'` ADD KEY `member_id` (`member_id`,`name`);';
-                    $db->query($sql);
-                    $content[] = '<li class="correct">สร้างตาราง `'.$table_user_meta.'` สำเร็จ</li>';
+                    $db->query('ALTER TABLE `'.$table_user_meta.'` ADD KEY `member_id` (`member_id`,`name`);');
                 } else {
                     $db->query("ALTER TABLE `$table_user_meta` CHANGE `name` `name` VARCHAR(20) CHARACTER SET utf8 NOT NULL");
-                    $content[] = '<li class="correct">ปรับปรุงตาราง `'.$table_user_meta.'` สำเร็จ</li>';
                 }
-                // ตาราง reservation (6.0.3)
-                $table = $db_config['prefix'].'_reservation';
-                if (!$db->fieldExists($table, 'approve')) {
-                    $db->query("ALTER TABLE `$table` ADD `approve` tinyint(1) NOT NULL, ADD `closed` tinyint(1) NOT NULL, ADD `department` varchar(10) DEFAULT NULL");
-                    $db->query("UPDATE `$table` SET `closed`=1");
-                    $db->query("UPDATE `$table` SET `approve`=1");
-                    $db->query("ALTER TABLE `$table` ADD INDEX (`status`)");
-                    $sql = "DELETE FROM `$table_user_meta` WHERE `name`='department'";
-                    $db->query($sql);
-                    $sql = "INSERT INTO `$table_user_meta` (`value`,`name`,`member_id`)";
-                    $sql .= " SELECT '1','department', id FROM `$table_user`AS U WHERE `id`=1 OR `permission` LIKE '%can_approve_room%'";
-                    $db->query($sql);
-                    $sql = "UPDATE `$table_user` SET `status`=0 WHERE `status`>1 AND `permission` LIKE '%can_approve_room%'";
-                    $db->query($sql);
-                    $sql = "INSERT INTO `$table_user_meta` (`value`,`name`,`member_id`)";
-                    $sql .= "SELECT '2','department', `id` FROM `$table_user`AS U";
-                    $sql .= " WHERE NOT EXISTS (SELECT `member_id` FROM `$table_user_meta` WHERE `member_id`=U.`id`)";
-                    $db->query($sql);
-                    $content[] = '<li class="correct">เพิ่มแผนกของสมาชิกทุกคนสำเร็จ</li>';
+                $entries[] = $listItem(true, install_text('Дополнительные атрибуты пользователей обновлены', 'User metadata table updated'));
+                $table_reservation = $db_config['prefix'].'_reservation';
+                if (!$db->fieldExists($table_reservation, 'approve')) {
+                    $db->query("ALTER TABLE `$table_reservation` ADD `approve` tinyint(1) NOT NULL, ADD `closed` tinyint(1) NOT NULL, ADD `department` varchar(10) DEFAULT NULL");
+                    $db->query("UPDATE `$table_reservation` SET `closed`=1");
+                    $db->query("UPDATE `$table_reservation` SET `approve`=1");
+                    $db->query("ALTER TABLE `$table_reservation` ADD INDEX (`status`)");
+                    $db->query("DELETE FROM `$table_user_meta` WHERE `name`='department'");
+                    $db->query("INSERT INTO `$table_user_meta` (`value`,`name`,`member_id`) SELECT '1','department', id FROM `$table_user` WHERE `id`=1 OR `permission` LIKE '%can_approve_room%'");
+                    $db->query("UPDATE `$table_user` SET `status`=0 WHERE `status`>1 AND `permission` LIKE '%can_approve_room%'");
+                    $db->query("INSERT INTO `$table_user_meta` (`value`,`name`,`member_id`) SELECT '2','department', U.`id` FROM `$table_user` AS U WHERE NOT EXISTS (SELECT 1 FROM `$table_user_meta` WHERE `member_id`=U.`id`)");
                 }
-                if ($db->fieldExists($table, 'approver')) {
-                    $db->query("ALTER TABLE `$table` DROP `approver`");
-                    $db->query("ALTER TABLE `$table` DROP `approved_date`");
+                if ($db->fieldExists($table_reservation, 'approver')) {
+                    $db->query("ALTER TABLE `$table_reservation` DROP `approver`");
+                    $db->query("ALTER TABLE `$table_reservation` DROP `approved_date`");
                 }
-                $content[] = '<li class="correct">ปรับปรุงตาราง `'.$table.'` สำเร็จ</li>';
-                // บันทึก settings/config.php
+                $entries[] = $listItem(true, install_text('Таблица бронирований обновлена', 'Reservation table updated'));
                 $config['version'] = $new_config['version'];
                 $config['reversion'] = time();
                 if (function_exists('imagewebp')) {
@@ -190,40 +162,31 @@ if (defined('ROOT_PATH')) {
                     $config['booking_delete'] = [$config['booking_delete']];
                 }
                 $f = save($config, ROOT_PATH.'settings/config.php');
-                $content[] = '<li class="'.($f ? 'correct' : 'incorrect').'">บันทึก <b>config.php</b> ...</li>';
-                // นำเข้าภาษา
+                $entries[] = $listItem($f, install_text('Файл <strong>settings/config.php</strong> сохранён', 'settings/config.php saved'));
                 include ROOT_PATH.'install/language.php';
             } catch (\PDOException $exc) {
-                $content[] = '<li class="incorrect">'.$exc->getMessage().'</li>';
+                $entries[] = $listItem(false, htmlspecialchars($exc->getMessage(), ENT_QUOTES, 'UTF-8'));
                 $error = true;
             } catch (\Exception $exc) {
-                $content[] = '<li class="incorrect">'.$exc->getMessage().'</li>';
+                $entries[] = $listItem(false, htmlspecialchars($exc->getMessage(), ENT_QUOTES, 'UTF-8'));
                 $error = true;
             }
             if (!$error) {
-                echo '<h2>ปรับรุ่นเรียบร้อย</h2>';
-                echo '<p>การปรับรุ่นได้ดำเนินการเสร็จเรียบร้อยแล้ว หากคุณต้องการความช่วยเหลือในการใช้งาน คุณสามารถ ติดต่อสอบถามได้ที่ <a href="https://www.kotchasan.com" target="_blank">https://www.kotchasan.com</a></p>';
-                echo '<ul>'.implode('', $content).'</ul>';
-                echo '<p class=warning>กรุณาลบไดเร็คทอรี่ <em>install/</em> ออกจาก Server ของคุณ</p>';
-                echo '<p>คุณควรปรับ chmod ให้ไดเร็คทอรี่ <em>datas/</em> และ <em>settings/</em> (และไดเร็คทอรี่อื่นๆที่คุณได้ปรับ chmod ไว้ก่อนการปรับรุ่น) ให้เป็น 644 ก่อนดำเนินการต่อ (ถ้าคุณได้ทำการปรับ chmod ไว้ด้วยตัวเอง)</p>';
-                echo '<p><a href="../index.php" class="button large admin">เข้าระบบ</a></p>';
+                echo '<h2>'.install_text('Обновление завершено', 'Upgrade complete').'</h2>';
+                echo '<p>'.install_text('Система успешно обновлена. За поддержкой обращайтесь на <a href="https://www.kotchasan.com" target="_blank" rel="noreferrer">kotchasan.com</a>.', 'The upgrade finished successfully. Contact <a href="https://www.kotchasan.com" target="_blank" rel="noreferrer">kotchasan.com</a> for support.').'</p>';
+                echo '<ul>'.implode('', $entries).'</ul>';
+                echo '<div class="warning">'.install_text('Удалите каталог <strong>install/</strong> и верните права каталогов <strong>datas/</strong> и <strong>settings/</strong> к 644.', 'Remove the <strong>install/</strong> directory and reset <strong>datas/</strong> and <strong>settings/</strong> permissions to 644.').'</div>';
+                echo '<div class="button-bar"><a href="../index.php" class="button primary">'.install_text('Открыть систему', 'Open the system').'</a></div>';
             } else {
-                echo '<h2>ปรับรุ่นไม่สำเร็จ</h2>';
-                echo '<p>การปรับรุ่นยังไม่สมบูรณ์ ลองตรวจสอบข้อผิดพลาดที่เกิดขึ้นและแก้ไขดู หากคุณต้องการความช่วยเหลือการติดตั้ง คุณสามารถ ติดต่อสอบถามได้ที่ <a href="https://www.kotchasan.com" target="_blank">https://www.kotchasan.com</a></p>';
-                echo '<ul>'.implode('', $content).'</ul>';
-                echo '<p><a href="." class="button large admin">ลองใหม่</a></p>';
+                echo '<h2>'.install_text('Обновление не завершено', 'Upgrade incomplete').'</h2>';
+                echo '<p>'.install_text('Некоторые шаги завершились ошибкой. Проверьте сообщения ниже и повторите попытку.', 'Some upgrade steps failed. Review the messages below and try again.').'</p>';
+                echo '<ul>'.implode('', $entries).'</ul>';
+                echo '<div class="button-bar"><a href="." class="button secondary">'.install_text('Попробовать снова', 'Try again').'</a></div>';
             }
         }
     }
 }
 
-/**
- * @param Db $db
- * @param string $table_name
- * @param string $username
- * @param string $password
- * @param string $password_key
- */
 function updateAdmin($db, $table_name, $username, $password, $password_key)
 {
     include ROOT_PATH.'Kotchasan/Text.php';
@@ -234,20 +197,15 @@ function updateAdmin($db, $table_name, $username, $password, $password_key)
         'status' => 1
     ]);
     if (!$result || $result->id > 1) {
-        throw new \Exception('ชื่อผู้ใช้ไม่ถูกต้อง หรือไม่ใช่ผู้ดูแลระบบสูงสุด');
+        throw new \Exception(install_text('Имя пользователя не принадлежит супер администратору.', 'Username does not belong to the super administrator.'));
     } elseif ($result->password === sha1($password.$result->salt)) {
-        // password เวอร์ชั่นเก่า
         $password = sha1($password_key.$password.$result->salt);
         $db->update($table_name, ['id' => $result->id], ['password' => $password]);
     } elseif ($result->password != sha1($password_key.$password.$result->salt)) {
-        throw new \Exception('รหัสผ่านไม่ถูกต้อง');
+        throw new \Exception(install_text('Неверный пароль администратора.', 'Invalid administrator password.'));
     }
 }
 
-/**
- * @param array $config
- * @param string $file
- */
 function save($config, $file)
 {
     $f = @fopen($file, 'wb');

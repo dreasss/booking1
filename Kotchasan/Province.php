@@ -4,235 +4,189 @@
  *
  * @copyright 2016 Goragod.com
  * @license https://www.kotchasan.com/license/
- * @author Goragod Wiriya <admin@goragod.com>
- * @package Kotchasan
  */
 
 namespace Kotchasan;
 
 /**
- * This class provides a list of provinces in Thailand and Laos.
- *
- * @see https://www.kotchasan.com/
+ * Provides Russian federal subject lookups for the booking platform.
  */
 class Province
 {
     /**
-     * Load provinces based on the selected country.
-     * If not specified, it uses Thailand as the default country.
-     *
-     * @param string $country
-     *
-     * @return array
+     * Load provinces for the specified country code.
      */
     private static function init($country)
     {
-        if (method_exists('Kotchasan\Province', $country)) {
-            return \Kotchasan\Province::$country();
-        } else {
-            return [];
+        $country = strtoupper($country);
+        if (method_exists(__CLASS__, $country)) {
+            return forward_static_call([__CLASS__, $country]);
         }
+
+        return [];
     }
 
     /**
-     * Get a list of all provinces.
-     * It returns the names of provinces in the specified language (defaults to English).
-     *
-     * @param string $country (default: 'TH')
-     *
-     * @return array
+     * Get a list of provinces for the given country (Russia by default).
      */
-    public static function all($country = 'TH')
+    public static function all($country = 'RU')
     {
         $datas = self::init($country);
-        $result = [];
-        if (!empty($datas)) {
-            $language = Language::name();
-            $language = in_array($language, array_keys(reset($datas))) ? $language : 'en';
-            $result = [];
-            foreach ($datas as $iso => $values) {
-                $result[$iso] = $values[$language];
-            }
-            if ($language == 'en') {
-                asort($result);
-            }
+        if (empty($datas)) {
+            return [];
         }
+        $language = Language::name();
+        $language = array_key_exists($language, reset($datas)) ? $language : 'en';
+        $result = [];
+        foreach ($datas as $iso => $values) {
+            $result[$iso] = $values[$language];
+        }
+        if ($language === 'en') {
+            asort($result);
+        }
+
         return $result;
     }
 
     /**
-     * Get a list of countries with installed provinces.
-     *
-     * @return array
+     * Countries with configured province data.
      */
     public static function countries()
     {
-        return ['TH', 'LA'];
+        return ['RU'];
     }
 
     /**
-     * Get the name of a province based on its ISO code and language.
-     * If the language is not specified, it uses the current language.
-     * Returns an empty string if the province is not found.
-     *
-     * @assert (10) [==] 'กรุงเทพมหานคร'
-     *
-     * @param int    $iso
-     * @param string $lang
-     * @param string $country (default: 'TH')
-     *
-     * @return string
+     * Get a province name by its code.
      */
-    public static function get($iso, $lang = '', $country = 'TH')
+    public static function get($iso, $lang = '', $country = 'RU')
     {
         $datas = self::init($country);
-        if (empty($lang)) {
+        if (empty($datas)) {
+            return '';
+        }
+        if ($lang === '') {
             $lang = Language::name();
         }
-        $lang = in_array($lang, array_keys(reset($datas))) ? $lang : 'en';
-        return isset($datas[$iso]) ? $datas[$iso][$lang] : '';
+        $lang = array_key_exists($lang, reset($datas)) ? $lang : 'en';
+        $key = str_pad((string) $iso, 2, '0', STR_PAD_LEFT);
+
+        return isset($datas[$key]) ? $datas[$key][$lang] : '';
     }
 
     /**
-     * Get the ISO code of a province based on its name and language.
-     *
-     * @param string $province The name of the province
-     * @param string $lang The language code for the desired language (e.g., 'th' for Thai, 'en' for English)
-     * @param string $country (default: 'TH')
-     *
-     * @return string The ISO code of the province
+     * Find the province code by name.
      */
-    public static function isoFromProvince($province, $lang = '', $country = 'TH')
+    public static function isoFromProvince($province, $lang = '', $country = 'RU')
     {
         $datas = self::init($country);
-        if (empty($lang)) {
+        if (empty($datas)) {
+            return '';
+        }
+        if ($lang === '') {
             $lang = Language::name();
         }
-        $lang = in_array($lang, array_keys(reset($datas))) ? $lang : 'en';
-        $result = '';
+        $lang = array_key_exists($lang, reset($datas)) ? $lang : 'en';
         foreach ($datas as $iso => $items) {
             if ($items[$lang] === $province) {
-                $result = $iso;
-                break;
+                return $iso;
             }
         }
-        return $result;
+
+        return '';
     }
 
     /**
-     * List of provinces in Thailand, sorted by Thai name.
-     *
-     * @return array An array containing province data for Thailand
+     * Russian federal subjects with Russian and English captions.
      */
-    private static function TH()
+    private static function RU()
     {
         return [
-            '81' => ['th' => 'กระบี่', 'en' => 'Krabi'],
-            '10' => ['th' => 'กรุงเทพมหานคร', 'en' => 'Bangkok'],
-            '71' => ['th' => 'กาญจนบุรี', 'en' => 'Kanchanaburi'],
-            '46' => ['th' => 'กาฬสินธุ์', 'en' => 'Kalasin'],
-            '62' => ['th' => 'กำแพงเพชร', 'en' => 'KamphaengPhet'],
-            '40' => ['th' => 'ขอนแก่น', 'en' => 'KhonKaen'],
-            '22' => ['th' => 'จันทบุรี', 'en' => 'Chanthaburi'],
-            '24' => ['th' => 'ฉะเชิงเทรา', 'en' => 'Chachoengsao'],
-            '20' => ['th' => 'ชลบุรี', 'en' => 'ChonBuri'],
-            '18' => ['th' => 'ชัยนาท', 'en' => 'ChaiNat'],
-            '36' => ['th' => 'ชัยภูมิ', 'en' => 'Chaiyaphum'],
-            '86' => ['th' => 'ชุมพร', 'en' => 'Chumphon'],
-            '57' => ['th' => 'เชียงราย', 'en' => 'ChiangRai'],
-            '50' => ['th' => 'เชียงใหม่', 'en' => 'ChiangMai'],
-            '92' => ['th' => 'ตรัง', 'en' => 'Trang'],
-            '23' => ['th' => 'ตราด', 'en' => 'Trat'],
-            '63' => ['th' => 'ตาก', 'en' => 'Tak'],
-            '26' => ['th' => 'นครนายก', 'en' => 'NakhonNayok'],
-            '73' => ['th' => 'นครปฐม', 'en' => 'NakhonPathom'],
-            '48' => ['th' => 'นครพนม', 'en' => 'NakhonPhanom'],
-            '30' => ['th' => 'นครราชสีมา', 'en' => 'NakhonRatchasima'],
-            '80' => ['th' => 'นครศรีธรรมราช', 'en' => 'NakhonSiThammarat'],
-            '60' => ['th' => 'นครสวรรค์', 'en' => 'NakhonSawan'],
-            '12' => ['th' => 'นนทบุรี', 'en' => 'Nonthaburi'],
-            '96' => ['th' => 'นราธิวาส', 'en' => 'Narathiwat'],
-            '55' => ['th' => 'น่าน', 'en' => 'Nan'],
-            '97' => ['th' => 'บึงกาฬ', 'en' => 'buogkan'],
-            '31' => ['th' => 'บุรีรัมย์', 'en' => 'BuriRam'],
-            '13' => ['th' => 'ปทุมธานี', 'en' => 'PathumThani'],
-            '77' => ['th' => 'ประจวบคีรีขันธ์', 'en' => 'PrachuapKhiriKhan'],
-            '25' => ['th' => 'ปราจีนบุรี', 'en' => 'PrachinBuri'],
-            '94' => ['th' => 'ปัตตานี', 'en' => 'Pattani'],
-            '14' => ['th' => 'พระนครศรีอยุธยา', 'en' => 'PhraNakhonSiAyutthaya'],
-            '56' => ['th' => 'พะเยา', 'en' => 'Phayao'],
-            '82' => ['th' => 'พังงา', 'en' => 'Phangnga'],
-            '93' => ['th' => 'พัทลุง', 'en' => 'Phatthalung'],
-            '66' => ['th' => 'พิจิตร', 'en' => 'Phichit'],
-            '65' => ['th' => 'พิษณุโลก', 'en' => 'Phitsanulok'],
-            '76' => ['th' => 'เพชรบุรี', 'en' => 'Phetchaburi'],
-            '67' => ['th' => 'เพชรบูรณ์', 'en' => 'Phetchabun'],
-            '54' => ['th' => 'แพร่', 'en' => 'Phrae'],
-            '83' => ['th' => 'ภูเก็ต', 'en' => 'Phuket'],
-            '44' => ['th' => 'มหาสารคาม', 'en' => 'MahaSarakham'],
-            '49' => ['th' => 'มุกดาหาร', 'en' => 'Mukdahan'],
-            '58' => ['th' => 'แม่ฮ่องสอน', 'en' => 'MaeHongSon'],
-            '35' => ['th' => 'ยโสธร', 'en' => 'Yasothon'],
-            '95' => ['th' => 'ยะลา', 'en' => 'Yala'],
-            '45' => ['th' => 'ร้อยเอ็ด', 'en' => 'RoiEt'],
-            '85' => ['th' => 'ระนอง', 'en' => 'Ranong'],
-            '21' => ['th' => 'ระยอง', 'en' => 'Rayong'],
-            '70' => ['th' => 'ราชบุรี', 'en' => 'Ratchaburi'],
-            '16' => ['th' => 'ลพบุรี', 'en' => 'Loburi'],
-            '52' => ['th' => 'ลำปาง', 'en' => 'Lampang'],
-            '51' => ['th' => 'ลำพูน', 'en' => 'Lamphun'],
-            '42' => ['th' => 'เลย', 'en' => 'Loei'],
-            '33' => ['th' => 'ศรีสะเกษ', 'en' => 'SiSaKet'],
-            '47' => ['th' => 'สกลนคร', 'en' => 'SakonNakhon'],
-            '90' => ['th' => 'สงขลา', 'en' => 'Songkhla'],
-            '91' => ['th' => 'สตูล', 'en' => 'Satun'],
-            '11' => ['th' => 'สมุทรปราการ', 'en' => 'SamutPrakan'],
-            '75' => ['th' => 'สมุทรสงคราม', 'en' => 'SamutSongkhram'],
-            '74' => ['th' => 'สมุทรสาคร', 'en' => 'SamutSakhon'],
-            '27' => ['th' => 'สระแก้ว', 'en' => 'SaKaeo'],
-            '19' => ['th' => 'สระบุรี', 'en' => 'Saraburi'],
-            '17' => ['th' => 'สิงห์บุรี', 'en' => 'SingBuri'],
-            '64' => ['th' => 'สุโขทัย', 'en' => 'Sukhothai'],
-            '72' => ['th' => 'สุพรรณบุรี', 'en' => 'SuphanBuri'],
-            '84' => ['th' => 'สุราษฎร์ธานี', 'en' => 'SuratThani'],
-            '32' => ['th' => 'สุรินทร์', 'en' => 'Surin'],
-            '43' => ['th' => 'หนองคาย', 'en' => 'NongKhai'],
-            '39' => ['th' => 'หนองบัวลำภู', 'en' => 'NongBuaLamPhu'],
-            '15' => ['th' => 'อ่างทอง', 'en' => 'AngThong'],
-            '37' => ['th' => 'อำนาจเจริญ', 'en' => 'AmnatCharoen'],
-            '41' => ['th' => 'อุดรธานี', 'en' => 'UdonThani'],
-            '53' => ['th' => 'อุตรดิตถ์', 'en' => 'Uttaradit'],
-            '61' => ['th' => 'อุทัยธานี', 'en' => 'UthaiThani'],
-            '34' => ['th' => 'อุบลราชธานี', 'en' => 'UbonRatchathani']
-        ];
-    }
-
-    /**
-     * List of provinces in Laos, sorted by Lao name.
-     *
-     * @return array An array containing province data for Laos
-     */
-    private static function LA()
-    {
-        return [
-            '12' => ['th' => 'คำม่วน', 'la' => 'ຄໍາມ່ວນ', 'en' => 'Khammouane'],
-            '16' => ['th' => 'จำปาศักดิ์', 'la' => 'ຈຳປາສັກ', 'en' => 'Champasak'],
-            '09' => ['th' => 'เชียงขวาง', 'la' => 'ຊຽງຂວາງ', 'en' => 'Xiangkhouang'],
-            '08' => ['th' => 'ไชยบุรี', 'la' => 'ໄຊຍະບູລີ', 'en' => 'Sainyabuli'],
-            '18' => ['th' => 'ไชยสมบูรณ์', 'la' => 'ໄຊສົມບູນ', 'en' => 'Xaisomboun'],
-            '15' => ['th' => 'เซกอง', 'la' => 'ເຊກອງ', 'en' => 'Sekong'],
-            '11' => ['th' => 'บอลิคำไซ', 'la' => 'ບໍລິຄໍາໄຊ', 'en' => 'Bolikhamsai'],
-            '05' => ['th' => 'บ่อแก้ว', 'la' => 'ບໍ່ແກ້ວ', 'en' => 'Bokeo'],
-            '02' => ['th' => 'พงสาลี', 'la' => 'ຜົ້ງສາລີ', 'en' => 'Phongsaly'],
-            '10' => ['th' => 'เวียงจันทน์', 'la' => 'ວຽງຈັນ', 'en' => 'Vientiane'],
-            '14' => ['th' => 'สาละวัน', 'la' => 'ສາລະວັນ', 'en' => 'Salavan'],
-            '13' => ['th' => 'สุวรรณเขต', 'la' => 'ສະຫວັນນະເຂດ', 'en' => 'Savannakhet'],
-            '03' => ['th' => 'หลวงน้ำทา', 'la' => 'ຫລວງນໍ້າທາ', 'en' => 'Luang Namtha'],
-            '06' => ['th' => 'หลวงพระบาง', 'la' => 'ຫລວງພະບາງ', 'en' => 'Luang Prabang'],
-            '07' => ['th' => 'หัวพัน', 'la' => 'ຫົວພັນ', 'en' => 'Houaphanh'],
-            '17' => ['th' => 'อัตตะปือ', 'la' => 'ອັດຕະປື', 'en' => 'Attapeu'],
-            '04' => ['th' => 'อุดมไซ', 'la' => 'ອຸດົມໄຊ', 'en' => 'Oudomxay'],
-            '01' => ['th' => 'นครหลวงเวียงจันทน์', 'la' => 'ນະຄອນຫຼວງວຽງຈັນ', 'en' => 'Oudomxay']
+            '01' => ['ru' => 'Республика Адыгея', 'en' => 'Republic of Adygea'],
+            '02' => ['ru' => 'Республика Башкортостан', 'en' => 'Republic of Bashkortostan'],
+            '03' => ['ru' => 'Республика Бурятия', 'en' => 'Republic of Buryatia'],
+            '04' => ['ru' => 'Республика Алтай', 'en' => 'Altai Republic'],
+            '05' => ['ru' => 'Республика Дагестан', 'en' => 'Republic of Dagestan'],
+            '06' => ['ru' => 'Республика Ингушетия', 'en' => 'Republic of Ingushetia'],
+            '07' => ['ru' => 'Кабардино-Балкарская Республика', 'en' => 'Kabardino-Balkaria'],
+            '08' => ['ru' => 'Карачаево-Черкесская Республика', 'en' => 'Karachay-Cherkess Republic'],
+            '09' => ['ru' => 'Республика Карелия', 'en' => 'Republic of Karelia'],
+            '10' => ['ru' => 'Республика Коми', 'en' => 'Komi Republic'],
+            '11' => ['ru' => 'Республика Марий Эл', 'en' => 'Mari El Republic'],
+            '12' => ['ru' => 'Республика Мордовия', 'en' => 'Republic of Mordovia'],
+            '13' => ['ru' => 'Республика Саха (Якутия)', 'en' => 'Sakha Republic (Yakutia)'],
+            '14' => ['ru' => 'Республика Северная Осетия — Алания', 'en' => 'Republic of North Ossetia-Alania'],
+            '15' => ['ru' => 'Республика Татарстан', 'en' => 'Republic of Tatarstan'],
+            '16' => ['ru' => 'Республика Тыва', 'en' => 'Tuva Republic'],
+            '17' => ['ru' => 'Удмуртская Республика', 'en' => 'Udmurt Republic'],
+            '18' => ['ru' => 'Республика Хакасия', 'en' => 'Republic of Khakassia'],
+            '19' => ['ru' => 'Чеченская Республика', 'en' => 'Chechen Republic'],
+            '20' => ['ru' => 'Чувашская Республика', 'en' => 'Chuvash Republic'],
+            '21' => ['ru' => 'Алтайский край', 'en' => 'Altai Krai'],
+            '22' => ['ru' => 'Забайкальский край', 'en' => 'Zabaykalsky Krai'],
+            '23' => ['ru' => 'Камчатский край', 'en' => 'Kamchatka Krai'],
+            '24' => ['ru' => 'Краснодарский край', 'en' => 'Krasnodar Krai'],
+            '25' => ['ru' => 'Красноярский край', 'en' => 'Krasnoyarsk Krai'],
+            '26' => ['ru' => 'Пермский край', 'en' => 'Perm Krai'],
+            '27' => ['ru' => 'Приморский край', 'en' => 'Primorsky Krai'],
+            '28' => ['ru' => 'Ставропольский край', 'en' => 'Stavropol Krai'],
+            '29' => ['ru' => 'Хабаровский край', 'en' => 'Khabarovsk Krai'],
+            '30' => ['ru' => 'Амурская область', 'en' => 'Amur Oblast'],
+            '31' => ['ru' => 'Архангельская область', 'en' => 'Arkhangelsk Oblast'],
+            '32' => ['ru' => 'Астраханская область', 'en' => 'Astrakhan Oblast'],
+            '33' => ['ru' => 'Белгородская область', 'en' => 'Belgorod Oblast'],
+            '34' => ['ru' => 'Брянская область', 'en' => 'Bryansk Oblast'],
+            '35' => ['ru' => 'Владимирская область', 'en' => 'Vladimir Oblast'],
+            '36' => ['ru' => 'Волгоградская область', 'en' => 'Volgograd Oblast'],
+            '37' => ['ru' => 'Вологодская область', 'en' => 'Vologda Oblast'],
+            '38' => ['ru' => 'Воронежская область', 'en' => 'Voronezh Oblast'],
+            '39' => ['ru' => 'Ивановская область', 'en' => 'Ivanovo Oblast'],
+            '40' => ['ru' => 'Иркутская область', 'en' => 'Irkutsk Oblast'],
+            '41' => ['ru' => 'Калининградская область', 'en' => 'Kaliningrad Oblast'],
+            '42' => ['ru' => 'Калужская область', 'en' => 'Kaluga Oblast'],
+            '43' => ['ru' => 'Кемеровская область', 'en' => 'Kemerovo Oblast'],
+            '44' => ['ru' => 'Кировская область', 'en' => 'Kirov Oblast'],
+            '45' => ['ru' => 'Костромская область', 'en' => 'Kostroma Oblast'],
+            '46' => ['ru' => 'Курганская область', 'en' => 'Kurgan Oblast'],
+            '47' => ['ru' => 'Курская область', 'en' => 'Kursk Oblast'],
+            '48' => ['ru' => 'Ленинградская область', 'en' => 'Leningrad Oblast'],
+            '49' => ['ru' => 'Липецкая область', 'en' => 'Lipetsk Oblast'],
+            '50' => ['ru' => 'Магаданская область', 'en' => 'Magadan Oblast'],
+            '51' => ['ru' => 'Московская область', 'en' => 'Moscow Oblast'],
+            '52' => ['ru' => 'Мурманская область', 'en' => 'Murmansk Oblast'],
+            '53' => ['ru' => 'Нижегородская область', 'en' => 'Nizhny Novgorod Oblast'],
+            '54' => ['ru' => 'Новгородская область', 'en' => 'Novgorod Oblast'],
+            '55' => ['ru' => 'Новосибирская область', 'en' => 'Novosibirsk Oblast'],
+            '56' => ['ru' => 'Омская область', 'en' => 'Omsk Oblast'],
+            '57' => ['ru' => 'Оренбургская область', 'en' => 'Orenburg Oblast'],
+            '58' => ['ru' => 'Орловская область', 'en' => 'Oryol Oblast'],
+            '59' => ['ru' => 'Пензенская область', 'en' => 'Penza Oblast'],
+            '60' => ['ru' => 'Псковская область', 'en' => 'Pskov Oblast'],
+            '61' => ['ru' => 'Ростовская область', 'en' => 'Rostov Oblast'],
+            '62' => ['ru' => 'Рязанская область', 'en' => 'Ryazan Oblast'],
+            '63' => ['ru' => 'Самарская область', 'en' => 'Samara Oblast'],
+            '64' => ['ru' => 'Саратовская область', 'en' => 'Saratov Oblast'],
+            '65' => ['ru' => 'Сахалинская область', 'en' => 'Sakhalin Oblast'],
+            '66' => ['ru' => 'Свердловская область', 'en' => 'Sverdlovsk Oblast'],
+            '67' => ['ru' => 'Смоленская область', 'en' => 'Smolensk Oblast'],
+            '68' => ['ru' => 'Тамбовская область', 'en' => 'Tambov Oblast'],
+            '69' => ['ru' => 'Тверская область', 'en' => 'Tver Oblast'],
+            '70' => ['ru' => 'Томская область', 'en' => 'Tomsk Oblast'],
+            '71' => ['ru' => 'Тульская область', 'en' => 'Tula Oblast'],
+            '72' => ['ru' => 'Тюменская область', 'en' => 'Tyumen Oblast'],
+            '73' => ['ru' => 'Ульяновская область', 'en' => 'Ulyanovsk Oblast'],
+            '74' => ['ru' => 'Челябинская область', 'en' => 'Chelyabinsk Oblast'],
+            '75' => ['ru' => 'Ярославская область', 'en' => 'Yaroslavl Oblast'],
+            '76' => ['ru' => 'Город Москва', 'en' => 'Moscow'],
+            '77' => ['ru' => 'Город Санкт-Петербург', 'en' => 'Saint Petersburg'],
+            '78' => ['ru' => 'Город Севастополь', 'en' => 'Sevastopol'],
+            '79' => ['ru' => 'Еврейская автономная область', 'en' => 'Jewish Autonomous Oblast'],
+            '80' => ['ru' => 'Ненецкий автономный округ', 'en' => 'Nenets Autonomous Okrug'],
+            '81' => ['ru' => 'Ханты-Мансийский автономный округ — Югра', 'en' => 'Khanty-Mansi Autonomous Okrug'],
+            '82' => ['ru' => 'Чукотский автономный округ', 'en' => 'Chukotka Autonomous Okrug'],
+            '83' => ['ru' => 'Ямало-Ненецкий автономный округ', 'en' => 'Yamalo-Nenets Autonomous Okrug'],
+            '84' => ['ru' => 'Республика Крым', 'en' => 'Republic of Crimea'],
+            '85' => ['ru' => 'Республика Калмыкия', 'en' => 'Republic of Kalmykia'],
         ];
     }
 }

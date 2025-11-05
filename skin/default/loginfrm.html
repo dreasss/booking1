@@ -1,36 +1,60 @@
-<article id=login_div>
-  <header id="logo" class="header_color">
+<article id="login_div" class="login-card animate-slide-in">
+  <header id="logo" class="header_color login-card__header">
+    <span class="login-card__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path fill="currentColor" d="M17 10h-1V8a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-7-2a2 2 0 0 1 4 0v2h-4Zm7 12H7v-8h10Z" />
+      </svg>
+    </span>
     <h1><a href="{WEBURL}index.php" title="{WEBTITLE}" class="{LOGO_CLASS}">{LOGO}</a></h1>
     <h3>{WEBDESCRIPTION}</h3>
   </header>
-  <form id=login_frm method=post autocomplete=off>
-    <h2 class="table fullwidth">
-      <span class="td icon-signin">{LNG_Login}</span>
-      <span class="td language-menu" data-text="{LANGUAGE}">
-        <ul>{LANGUAGES}</ul>
-      </span>
-    </h2>
-    <aside class="{CLASS} center">{MESSAGE}</aside>
-    <fieldset>
-      <label class="g-input icon-user">
-        <input type=text name=login_username id=login_username value="{EMAIL}" maxlength=255 placeholder="{PLACEHOLDER}" title="{PLACEHOLDER}">
+  <form id="login_frm" method="post" autocomplete="off">
+    <div class="language-menu language-menu--inline" data-lang="{LANGUAGE}" aria-label="{LNG_Change language}" title="{LANGUAGE_NAME}">
+      <span class="language-menu__trigger" aria-hidden="true">{LANGUAGE_BADGE}</span>
+      <span class="sr-only">{LNG_Change language}</span>
+      <ul class="language-menu__list" role="menu">{LANGUAGES}</ul>
+    </div>
+    <p class="login-intro">{LNG_Login intro}</p>
+    <fieldset class="fields">
+      <label class="field" for="login_username">
+        <span class="field__label">{PLACEHOLDER}</span>
+        <span class="field__control">
+          <span class="field__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.32 0-9 1.67-9 5v1h18v-1c0-3.33-5.68-5-9-5Z" />
+            </svg>
+          </span>
+          <input type="text" name="login_username" id="login_username" value="{EMAIL}" maxlength="255" placeholder="{PLACEHOLDER}" title="{PLACEHOLDER}">
+        </span>
       </label>
-      <label class="g-input icon-password">
-        <input class=showpassword type=password name=login_password id=login_password value="{PASSWORD}" maxlength=50 placeholder="{LNG_Password}" title="{LNG_Password}">
+      <label class="field" for="login_password">
+        <span class="field__label">{LNG_Password}</span>
+        <span class="field__control">
+          <span class="field__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path fill="currentColor" d="M17 10h-1V8a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-7-2a2 2 0 0 1 4 0v2h-4Zm7 12H7v-8h10Z" />
+            </svg>
+          </span>
+          <input class="showpassword" type="password" name="login_password" id="login_password" value="{PASSWORD}" maxlength="50" placeholder="{LNG_Password}" title="{LNG_Password}">
+        </span>
       </label>
     </fieldset>
-    <fieldset class="accept_term">
-      <label><input type=checkbox name=login_remember id=login_remember value="1" {REMEMBER}>{LNG_Remember me}</label>
-      <button type=submit class="button login wide">{LNG_Login}</button>
+    <aside class="{CLASS} center">{MESSAGE}</aside>
+    <fieldset class="actions">
+      <label class="remember"><input type="checkbox" name="login_remember" id="login_remember" value="1" {REMEMBER}>{LNG_Remember me}</label>
+      <button type="submit" class="button login">{LNG_Login}</button>
       <FACEBOOK>
-        <button type=button class="button facebook wide margin-top" id=facebook_login>
-          <span class="icon-facebook">Login with Facebook</span>
+        <button type="button" class="button facebook" id="facebook_login">
+          <span class="field__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M13 10h2.5l-.35 2.5H13V21h-3v-8.5H8v-2.5h2V8.75C10 6.68 11.05 5 13.65 5H16v2.5h-1.6c-.94 0-1.4.28-1.4 1.05Z" /></svg>
+          </span>
+          Login with Facebook
         </button>
         <script>initFacebookButton('facebook_login')</script>
       </FACEBOOK>
+      <div id="google_login"></div>
       {LINELOGIN}
       <div class="telegram-login">{TELEGRAMLOGIN}</div>
-      <div id=google_login></div>
     </fieldset>
     <fieldset class="center">
       {LOGINMENU}

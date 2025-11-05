@@ -84,7 +84,7 @@ class View extends \Gcms\View
         if (is_file(ROOT_PATH.DATA_FOLDER.'booking/'.$index->id.self::$cfg->stored_img_type)) {
             $img = WEB_URL.DATA_FOLDER.'booking/'.$index->id.self::$cfg->stored_img_type.'?'.time();
         } else {
-            $img = WEB_URL.'modules/booking/img/noimage.png';
+            $img = WEB_URL.'modules/booking/img/noimage.svg';
         }
         $fieldset->add('file', [
             'id' => 'picture',

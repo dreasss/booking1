@@ -205,7 +205,7 @@ final class Language extends \Kotchasan\KBase
     /**
      * Retrieves the name of the currently active language.
      *
-     * @assert () [==] 'th'
+     * @assert () [==] 'ru'
      *
      * @return string The name of the currently active language.
      */
@@ -425,7 +425,7 @@ final class Language extends \Kotchasan\KBase
                     if (!empty($languages) && preg_match('/^([a-z]{2,2}).*?$/', strtolower($languages[0]), $match)) {
                         $lang = $match[1];
                     } else {
-                        $lang = 'th';
+                        $lang = 'ru';
                     }
                 } else {
                     // Use the specified initial language
@@ -450,55 +450,55 @@ final class Language extends \Kotchasan\KBase
         }
         if (null === self::$languages) {
             // Default language
-            self::$language_name = 'th';
+            self::$language_name = 'ru';
             self::$languages = (object) [
-                'DATE_FORMAT' => 'd M Y เวลา H:i น.',
+                'DATE_FORMAT' => 'd.m.Y H:i',
                 'DATE_LONG' => [
-                    0 => 'อาทิตย์',
-                    1 => 'จันทร์',
-                    2 => 'อังคาร',
-                    3 => 'พุธ',
-                    4 => 'พฤหัสบดี',
-                    5 => 'ศุกร์',
-                    6 => 'เสาร์'
+                    0 => 'Воскресенье',
+                    1 => 'Понедельник',
+                    2 => 'Вторник',
+                    3 => 'Среда',
+                    4 => 'Четверг',
+                    5 => 'Пятница',
+                    6 => 'Суббота'
                 ],
                 'DATE_SHORT' => [
-                    0 => 'อา.',
-                    1 => 'จ.',
-                    2 => 'อ.',
-                    3 => 'พ.',
-                    4 => 'พฤ.',
-                    5 => 'ศ.',
-                    6 => 'ส.'
+                    0 => 'Вс',
+                    1 => 'Пн',
+                    2 => 'Вт',
+                    3 => 'Ср',
+                    4 => 'Чт',
+                    5 => 'Пт',
+                    6 => 'Сб'
                 ],
-                'YEAR_OFFSET' => 543,
+                'YEAR_OFFSET' => 0,
                 'MONTH_LONG' => [
-                    1 => 'มกราคม',
-                    2 => 'กุมภาพันธ์',
-                    3 => 'มีนาคม',
-                    4 => 'เมษายน',
-                    5 => 'พฤษภาคม',
-                    6 => 'มิถุนายน',
-                    7 => 'กรกฎาคม',
-                    8 => 'สิงหาคม',
-                    9 => 'กันยายน',
-                    10 => 'ตุลาคม',
-                    11 => 'พฤศจิกายน',
-                    12 => 'ธันวาคม'
+                    1 => 'Январь',
+                    2 => 'Февраль',
+                    3 => 'Март',
+                    4 => 'Апрель',
+                    5 => 'Май',
+                    6 => 'Июнь',
+                    7 => 'Июль',
+                    8 => 'Август',
+                    9 => 'Сентябрь',
+                    10 => 'Октябрь',
+                    11 => 'Ноябрь',
+                    12 => 'Декабрь'
                 ],
                 'MONTH_SHORT' => [
-                    1 => 'ม.ค.',
-                    2 => 'ก.พ.',
-                    3 => 'มี.ค.',
-                    4 => 'เม.ย.',
-                    5 => 'พ.ค.',
-                    6 => 'มิ.ย.',
-                    7 => 'ก.ค.',
-                    8 => 'ส.ค.',
-                    9 => 'ก.ย.',
-                    10 => 'ต.ค.',
-                    11 => 'พ.ย.',
-                    12 => 'ธ.ค.'
+                    1 => 'Янв',
+                    2 => 'Фев',
+                    3 => 'Мар',
+                    4 => 'Апр',
+                    5 => 'Май',
+                    6 => 'Июн',
+                    7 => 'Июл',
+                    8 => 'Авг',
+                    9 => 'Сен',
+                    10 => 'Окт',
+                    11 => 'Ноя',
+                    12 => 'Дек'
                 ]
             ];
         }

@@ -6,8 +6,12 @@
   <form id=register_frm method=post autocomplete=off action="{WEBURL}index.php">
     <h2 class="table fullwidth">
       <span class="td icon-register">{LNG_Register}</span>
-      <span class="td language-menu" data-text="{LANGUAGE}">
-        <ul>{LANGUAGES}</ul>
+      <span class="td language-menu language-menu--inline" data-lang="{LANGUAGE}" aria-label="{LNG_Change language}" title="{LANGUAGE_NAME}">
+        <span class="language-menu__trigger" aria-hidden="true">
+          {LANGUAGE_BADGE}
+        </span>
+        <span class="sr-only">{LNG_Change language}</span>
+        <ul class="language-menu__list" role="menu">{LANGUAGES}</ul>
       </span>
     </h2>
     <fieldset>

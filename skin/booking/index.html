@@ -4,7 +4,7 @@
 <head>
   <meta charset=utf-8>
   <meta name=viewport content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="{WEBURL}favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="{WEBURL}favicon.svg">
   <meta name="author" content="Kotchasan.com">
   <title>{TITLE}</title>
   <link rel=stylesheet href="index.php/css/view/index?{REV}">
@@ -25,8 +25,15 @@
             <div class=header_btn_wrapper>
               {LINE}
               <a id=dark_mode class="header_btn {DARKMODE}" title="{LNG_Dark mode}"></a>
-              <div class="icon-language language-menu header_btn" title="{LNG_Change language}" data-text="{LANGUAGE}">
-                <ul>{LANGUAGES}</ul>
+              <div class="language-menu header_btn icon-language" data-lang="{LANGUAGE}" aria-label="{LNG_Change language}" title="{LANGUAGE_NAME}">
+                <span class="language-menu__trigger" aria-hidden="true">
+                  {LANGUAGE_BADGE}
+                  <svg class="language-menu__caret" viewBox="0 0 16 16" focusable="false" aria-hidden="true">
+                    <path d="M4 6.25 8 10.25 12 6.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" />
+                  </svg>
+                </span>
+                <span class="sr-only">{LNG_Change language}</span>
+                <ul class="language-menu__list" role="menu">{LANGUAGES}</ul>
               </div>
             </div>
           </header>

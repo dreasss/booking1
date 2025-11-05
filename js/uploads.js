@@ -17,7 +17,6 @@
         input: "",
         fileprogress: "",
         fileext: ["jpg", "jpeg", "webp", "gif", "png"],
-        iconpath: WEB_URL + "skin/ext/",
         onupload: $K.emptyFunction,
         oncomplete: $K.emptyFunction,
         customSettings: {}
@@ -195,88 +194,109 @@
     },
     _display: function(file) {
       var p = document.createElement("p");
+      p.className = "upload-entry";
       this.result.appendChild(p);
       p.id = "p_" + this.prefix + "_" + this.index;
-      var img = document.createElement("img");
-      img.src = this._getIcon(file.ext);
-      p.appendChild(img);
-      var span = document.createElement("span");
-      span.innerHTML = file.name;
-      p.appendChild(span);
+      var icon = this._createIcon(file.ext);
+      p.appendChild(icon);
+      var body = document.createElement("div");
+      body.className = "upload-entry__body";
+      p.appendChild(body);
+      var title = document.createElement("span");
+      title.className = "upload-entry__name";
+      title.textContent = file.name;
+      body.appendChild(title);
       var a = document.createElement("a");
-      a.className = "icon-delete";
+      a.className = "icon-delete upload-entry__remove";
       a.id = "close_" + this.prefix + "_" + this.index;
+      a.href = "#";
       p.appendChild(a);
       var temp = this;
       callClick(a, function() {
         temp._remove(this.id.replace("close_" + temp.prefix + "_", ""));
       });
-      var span = document.createElement("span");
-      p.appendChild(span);
-      span.id = "result_" + this.prefix + "_" + this.index;
+      var status = document.createElement("span");
+      status.className = "upload-entry__status";
+      body.appendChild(status);
+      status.id = "result_" + this.prefix + "_" + this.index;
       if (this.multiple) {
         var bar = document.createElement("span");
         bar.className = "bar_graphs";
-        p.appendChild(bar);
+        body.appendChild(bar);
         var span = document.createElement("span");
         span.className = "value_graphs";
         span.id = "bar_" + this.prefix + "_" + this.index;
         bar.appendChild(span);
       }
     },
-    _getIcon: function(ext) {
-      var icons = new Array(
-        "file",
-        "aiff",
-        "avi",
-        "bmp",
-        "c",
-        "cpp",
-        "css",
-        "dll",
-        "doc",
-        "docx",
-        "exe",
-        "flv",
-        "gif",
-        "htm",
-        "html",
-        "iso",
-        "jpeg",
-        "jpg",
-        "webp",
-        "js",
-        "midi",
-        "mov",
-        "mp3",
-        "mpg",
-        "ogg",
-        "pdf",
-        "php",
-        "png",
-        "ppt",
-        "pptx",
-        "psd",
-        "rar",
-        "rm",
-        "rtf",
-        "sql",
-        "swf",
-        "tar",
-        "tgz",
-        "tiff",
-        "txt",
-        "wav",
-        "wma",
-        "wmv",
-        "xls",
-        "xml",
-        "xvid",
-        "zip"
-      );
-      var i = icons.indexOf(ext);
-      i = i > 0 ? i : 0;
-      return this.options.iconpath + icons[i] + ".png";
+    _createIcon: function(ext) {
+      var config = this._iconConfig(ext);
+      var span = document.createElement("span");
+      span.className = "file-icon";
+      span.setAttribute("data-tone", config.tone);
+      span.textContent = config.label;
+      span.title = config.title;
+      return span;
+    },
+    _iconConfig: function(ext) {
+      var key = (ext || "").toLowerCase();
+      var labels = {
+        aiff: {label: "AIFF", tone: "secondary"},
+        avi: {label: "AVI", tone: "secondary"},
+        bmp: {label: "BMP", tone: "secondary"},
+        c: {label: "C", tone: "secondary"},
+        cpp: {label: "CPP", tone: "secondary"},
+        css: {label: "CSS", tone: "brand"},
+        dll: {label: "DLL", tone: "muted"},
+        doc: {label: "DOC", tone: "brand"},
+        docx: {label: "DOCX", tone: "brand"},
+        exe: {label: "EXE", tone: "muted"},
+        flv: {label: "FLV", tone: "secondary"},
+        gif: {label: "GIF", tone: "accent"},
+        htm: {label: "HTML", tone: "brand"},
+        html: {label: "HTML", tone: "brand"},
+        iso: {label: "ISO", tone: "muted"},
+        jpeg: {label: "JPG", tone: "accent"},
+        jpg: {label: "JPG", tone: "accent"},
+        js: {label: "JS", tone: "brand"},
+        midi: {label: "MIDI", tone: "secondary"},
+        mov: {label: "MOV", tone: "secondary"},
+        mp3: {label: "MP3", tone: "secondary"},
+        mpg: {label: "MPG", tone: "secondary"},
+        ogg: {label: "OGG", tone: "secondary"},
+        pdf: {label: "PDF", tone: "danger"},
+        php: {label: "PHP", tone: "brand"},
+        png: {label: "PNG", tone: "accent"},
+        ppt: {label: "PPT", tone: "warm"},
+        pptx: {label: "PPTX", tone: "warm"},
+        psd: {label: "PSD", tone: "secondary"},
+        rar: {label: "RAR", tone: "muted"},
+        rm: {label: "RM", tone: "muted"},
+        rtf: {label: "RTF", tone: "brand"},
+        sql: {label: "SQL", tone: "brand"},
+        swf: {label: "SWF", tone: "muted"},
+        tar: {label: "TAR", tone: "muted"},
+        tgz: {label: "TGZ", tone: "muted"},
+        tiff: {label: "TIFF", tone: "accent"},
+        txt: {label: "TXT", tone: "secondary"},
+        wav: {label: "WAV", tone: "secondary"},
+        wma: {label: "WMA", tone: "secondary"},
+        wmv: {label: "WMV", tone: "secondary"},
+        xls: {label: "XLS", tone: "success"},
+        xml: {label: "XML", tone: "brand"},
+        xvid: {label: "XVID", tone: "secondary"},
+        zip: {label: "ZIP", tone: "muted"},
+        webp: {label: "WEBP", tone: "accent"}
+      };
+      var config = labels[key] || {
+        label: (key || "file").substring(0, 4).toUpperCase(),
+        tone: "neutral"
+      };
+      return {
+        label: config.label,
+        tone: config.tone,
+        title: key ? key.toUpperCase() + " file" : "File"
+      };
     },
     _remove: function(index) {
       $G("p_" + this.prefix + "_" + index).remove();

@@ -29,16 +29,16 @@ CREATE TABLE `{prefix}_category` (
 --
 
 INSERT INTO `{prefix}_category` (`type`, `category_id`, `topic`, `color`, `published`) VALUES
-('department', '1', 'บริหาร', NULL, 1),
-('department', '2', 'จัดซื้อจัดจ้าง', NULL, 1),
-('department', '3', 'บุคคล', NULL, 1),
-('use', '1', 'ประชุม', '', 1),
-('use', '2', 'สัมนา', '', 1),
-('use', '3', 'จัดเลี้ยง', '', 1),
-('accessories', '4', 'ของว่าง', '', 1),
-('accessories', '3', 'เครื่องฉายแผ่นใส', '', 1),
-('accessories', '2', 'จอโปรเจ็คเตอร์', '', 1),
-('accessories', '1', 'เครื่องคอมพิวเตอร์', '', 1);
+('department', '1', 'Дирекция', NULL, 1),
+('department', '2', 'Закупки', NULL, 1),
+('department', '3', 'HR', NULL, 1),
+('use', '1', 'Переговоры', '', 1),
+('use', '2', 'Презентация', '', 1),
+('use', '3', 'Корпоратив', '', 1),
+('accessories', '4', 'Кофе-брейк', '', 1),
+('accessories', '3', 'Док-станция', '', 1),
+('accessories', '2', 'Проектор', '', 1),
+('accessories', '1', 'Ноутбук', '', 1);
 
 -- --------------------------------------------------------
 
@@ -52,7 +52,7 @@ CREATE TABLE `{prefix}_language` (
   `type` varchar(5) NOT NULL,
   `owner` varchar(20) NOT NULL,
   `js` tinyint(1) NOT NULL,
-  `th` text DEFAULT NULL,
+  `ru` text DEFAULT NULL,
   `en` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -128,9 +128,9 @@ CREATE TABLE `{prefix}_rooms` (
 --
 
 INSERT INTO `{prefix}_rooms` (`id`, `name`, `detail`, `color`, `published`) VALUES
-(1, 'ห้องประชุม 2', 'ห้องประชุมพร้อมระบบ Video conference\r\nที่นั่งผู้เข้าร่วมประชุม รูปตัว U 2 แถว', '#01579B', 1),
-(2, 'ห้องประชุม 1', 'ห้องประชุมขนาดใหญ่\r\nพร้อมสิ่งอำนวยความสะดวกครบครัน', '#1A237E', 1),
-(3, 'ห้องประชุมส่วนเทคโนโลยีสารสนเทศ', 'ห้องประชุมขนาดใหญ่ (Hall)\r\nเหมาะสำรับการสัมนาเป็นหมู่คณะ และ จัดเลี้ยง', '#B71C1C', 1);
+(1, 'Аудитория “Нева”', 'Зал на 40 человек с видеоконференцией\r\nСхема рассадки U-shape, 2 ряда', '#01579B', 1),
+(2, 'Аудитория “Москва”', 'Большой зал для стратегических сессий\r\nПолный комплект оборудования и акустики', '#1A237E', 1),
+(3, 'Технопарк', 'Многофункциональный холл на 80 гостей\r\nПодходит для презентаций и корпоративов', '#B71C1C', 1);
 
 -- --------------------------------------------------------
 
@@ -149,14 +149,14 @@ CREATE TABLE `{prefix}_rooms_meta` (
 --
 
 INSERT INTO `{prefix}_rooms_meta` (`room_id`, `name`, `value`) VALUES
-(2, 'seats', '20 ที่นั่ง'),
+(2, 'seats', '20 мест'),
 (2, 'number', 'R-0001'),
-(2, 'building', 'อาคาร 1'),
-(1, 'seats', '50 ที่นั่ง รูปตัว U'),
+(2, 'building', 'Корпус A'),
+(1, 'seats', '40 мест (U-shape)'),
 (1, 'number', 'R-0002'),
-(1, 'building', 'อาคาร 2'),
-(3, 'building', 'โรงอาหาร'),
-(3, 'seats', '100 คน');
+(1, 'building', 'Корпус B'),
+(3, 'building', 'Корпус Innovation'),
+(3, 'seats', '80 гостей');
 
 -- --------------------------------------------------------
 

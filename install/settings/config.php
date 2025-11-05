@@ -3,12 +3,12 @@
 return [
     'version' => '6.9.0',
     'web_title' => 'E-Booking',
-    'web_description' => 'ระบบจองห้องประชุม',
-    'timezone' => 'Asia/Bangkok',
+    'web_description' => 'Корпоративная система бронирования переговорных',
+    'timezone' => 'Europe/Moscow',
     'member_status' => [
-        0 => 'สมาชิก',
-        1 => 'ผู้ดูแลระบบ',
-        2 => 'ผู้รับผิดชอบ'
+        0 => 'Пользователь',
+        1 => 'Администратор',
+        2 => 'Ответственный'
     ],
     'color_status' => [
         0 => '#259B24',
