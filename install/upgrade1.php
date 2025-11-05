@@ -2,22 +2,17 @@
 if (defined('ROOT_PATH')) {
     $username = isset($_SESSION['admin_username']) ? $_SESSION['admin_username'] : 'admin@localhost';
     $password = isset($_SESSION['admin_password']) ? $_SESSION['admin_password'] : 'admin';
-    echo '<form method=post action=index.php autocomplete=off>';
-    echo '<h2>สมาชิกผู้ดูแลระบบ</h2>';
-    echo '<p>คุณจะต้องระบุข้อมูลสมาชิกผู้ดูแลระบบสูงสุด</p>';
-    echo '<p class=item><label for=username>ชื่อผู้ใช้</label><span class="g-input icon-user"><input type=text size=50 maxlength=50 id=username name=username value="'.$username.'"></span></p>';
-    if (empty($username)) {
-        echo '<p class=comment><em>กรุณากรอกชื่อผู้ใช้ของผู้ดูแลระบบสูงสุด</em></p>';
-    } else {
-        echo '<p class=comment>กรุณากรอกชื่อผู้ใช้ของผู้ดูแลระบบสูงสุด</p>';
-    }
-    echo '<p class=item><label for=password>รหัสผ่าน</label><span class="g-input icon-password"><input type=password size=50 maxlength=20 id=password name=password value="'.$password.'"></span></p>';
-    if (empty($password)) {
-        echo '<p class=comment><em>กรุณากรอกรหัสผ่านของผู้ดูแลระบบสูงสุด</em></p>';
-    } else {
-        echo '<p class=comment>กรุณากรอกรหัสผ่านของผู้ดูแลระบบสูงสุด</p>';
-    }
-    echo '<input type=hidden name=step value=2>';
-    echo '<p><input class="button large save" type=submit value="ดำเนินการต่อ"></p>';
+    echo '<form method="post" action="index.php" autocomplete="off" class="animate-slide-in">';
+    echo '<h2>'.install_text('Учётная запись администратора', 'Administrator account').'</h2>';
+    echo '<p>'.install_text('Подтвердите или обновите данные главного администратора.', 'Confirm or update the super administrator credentials.').'</p>';
+    echo '<div class="form-grid">';
+    echo '  <label for="username">'.install_text('Имя пользователя', 'Username').'<span class="g-input"><input type="text" size="50" maxlength="50" id="username" name="username" value="'.htmlspecialchars($username, ENT_QUOTES, 'UTF-8').'"></span></label>';
+    echo '  <label for="password">'.install_text('Пароль', 'Password').'<span class="g-input"><input type="password" size="50" maxlength="20" id="password" name="password" value="'.htmlspecialchars($password, ENT_QUOTES, 'UTF-8').'"></span></label>';
+    echo '</div>';
+    echo '<p class="comment">'.install_text('Эти данные заменят текущую запись администратора.', 'These credentials will overwrite the existing administrator account.').'</p>';
+    echo '<input type="hidden" name="step" value="2">';
+    echo '<div class="button-bar">';
+    echo '  <button class="button primary" type="submit">'.install_text('Продолжить', 'Continue').'</button>';
+    echo '</div>';
     echo '</form>';
 }

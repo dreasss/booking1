@@ -17,6 +17,17 @@
           </span>
           <span class="sr-only">{LNG_Dark mode}</span>
         </a>
+
+        <div class="header_btn header_btn--menu language-menu" data-lang="{LANGUAGE}" aria-haspopup="true" aria-label="{LNG_Change language}" title="{LANGUAGE_NAME}">
+          <span class="language-menu__trigger" aria-hidden="true">
+            {LANGUAGE_BADGE}
+            <svg class="language-menu__caret" viewBox="0 0 16 16" focusable="false" aria-hidden="true">
+              <path d="M4 6.25 8 10.25 12 6.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" />
+            </svg>
+          </span>
+          <span class="sr-only">{LNG_Change language}</span>
+          <ul class="language-menu__list" role="menu">{LANGUAGES}</ul>
+=======
         <div class="header_btn header_btn--menu language-menu" data-text="{LANGUAGE}" title="{LANGUAGE}" aria-haspopup="true">
           <span class="header_btn-icon" aria-hidden="true">
             <svg class="icon" viewBox="0 0 24 24" focusable="false">
@@ -24,7 +35,7 @@
             </svg>
           </span>
           <span class="header_btn-label">{LANGUAGE}</span>
-          <ul>{LANGUAGES}</ul>
+         main
         </div>
         <span class="header-account" aria-live="polite">{LOGIN}</span>
       </div>

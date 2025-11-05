@@ -27,10 +27,17 @@ class Controller extends \Gcms\Controller
      */
     public function render(Request $request)
     {
-        // template ตามภาษาที่เลือก ถ้าไม่มีใช้ภาษาไทย
-        $template = ROOT_PATH.self::$cfg->skin.'/privacy_'.Language::name().'.html';
-        if (!file_exists($template)) {
-            $template = ROOT_PATH.self::$cfg->skin.'/privacy_th.html';
+        // template ตามภาษาที่เลือก พร้อมสำรองเป็นภาษารัสเซียหรืออังกฤษ
+        $template = null;
+        foreach ([Language::name(), 'ru', 'en'] as $lng) {
+            $candidate = ROOT_PATH.self::$cfg->skin.'/privacy_'.$lng.'.html';
+            if (file_exists($candidate)) {
+                $template = $candidate;
+                break;
+            }
+        }
+        if ($template === null) {
+            $template = ROOT_PATH.self::$cfg->skin.'/privacy_en.html';
         }
         // content
         $content = file_get_contents($template);

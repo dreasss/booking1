@@ -6,8 +6,12 @@
   <form id=forgot_frm method=post autocomplete=off action="index.php?module=welcome&amp;action=forgot">
     <h2 class="table fullwidth">
       <span class="td icon-password">{LNG_Forgot}</span>
-      <span class="td language-menu" data-text="{LANGUAGE}">
-        <ul>{LANGUAGES}</ul>
+      <span class="td language-menu language-menu--inline" data-lang="{LANGUAGE}" aria-label="{LNG_Change language}" title="{LANGUAGE_NAME}">
+        <span class="language-menu__trigger" aria-hidden="true">
+          {LANGUAGE_BADGE}
+        </span>
+        <span class="sr-only">{LNG_Change language}</span>
+        <ul class="language-menu__list" role="menu">{LANGUAGES}</ul>
       </span>
     </h2>
     <aside class="{CLASS} center">{MESSAGE}</aside>

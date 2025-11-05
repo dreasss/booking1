@@ -90,7 +90,9 @@ class View extends \Kotchasan\View
             /* ภาษา */
             '/{LNG_([^}]+)}/e' => '\Kotchasan\Language::parse(array(1=>"$1"))',
             /* ภาษา ที่ใช้งานอยู่ */
-            '/{LANGUAGE}/' => Language::name()
+            '/{LANGUAGE}/' => Language::name(),
+            '/{LANGUAGE_NAME}/' => Language::name(),
+            '/{LANGUAGE_BADGE}/' => strtoupper(Language::name())
         ]);
         return parent::renderHTML($template);
     }
