@@ -68,6 +68,7 @@ class Controller extends \Gcms\Controller
         // ตัวเลือกภาษา
         $languages = '';
         $current = strtolower(Language::name());
+
         $labels = Language::get('LANGUAGE_NAMES');
         if (!is_array($labels)) {
             $labels = ['ru' => 'Русский', 'en' => 'English'];
@@ -79,6 +80,13 @@ class Controller extends \Gcms\Controller
             $title = Language::replace('Switch to %s', $label);
             $active = $item === $current ? ' is-active' : '';
             $languages .= '<li role="presentation"><a id=lang_'.$item.' class="lang-option'.$active.'" href="'.$page->canonical()->withParams(['lang' => $item], true).'" aria-label="'.$title.'" title="'.$title.'" data-lang="'.$code.'" tabindex=1 role="menuitemradio" aria-checked="'.($item === $current ? 'true' : 'false').'">'.self::flagIcon($item).'<span class="language-option__label">'.$label.'</span></a></li>';
+=======
+        foreach (Language::installedLanguage() as $item) {
+            $code = strtoupper($item);
+            $t = '{LNG_Language} '.$code;
+            $active = $item === $current ? ' is-active' : '';
+            $languages .= '<li><a id=lang_'.$item.' class="lang-option'.$active.'" href="'.$page->canonical()->withParams(['lang' => $item], true).'" aria-label="'.$t.'" data-lang="'.$code.'" tabindex=1>'.$code.'</a></li>';
+ main
         }
         if (is_file(ROOT_PATH.DATA_FOLDER.'images/logo.png')) {
             $logo = '<img src="'.WEB_URL.DATA_FOLDER.'images/logo.png" alt="{WEBTITLE}">';

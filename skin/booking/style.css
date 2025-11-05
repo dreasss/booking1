@@ -1,4 +1,5 @@
 :root {
+
   --card-border-radius: 18px;
   --surface-base: #ffffff;
   --surface-muted: #f5f7fb;
@@ -26,6 +27,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Literal:wght@700&family=Montserrat:wght@400;500;600;700&display=swap');
 
+=======
+  --card-border-radius: 0;
+  --accent-500: #2563eb;
+  --accent-400: #3b82f6;
+  --glow-primary: 0 18px 40px -22px rgba(37, 99, 235, 0.65);
+  --ink-700: #1f2937;
+}
+main
 body {
   font-family: var(--font-sans);
   font-size: 16px;
@@ -376,6 +385,7 @@ header.header .icon-line:before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
 }
 
 .language-menu__trigger {
@@ -405,6 +415,95 @@ header.header .icon-line:before {
 
 .flag-icon {
   display: block;
+=======
+  gap: 0.4rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--header-color);
+}
+
+.language-menu:not(.header_btn)::before {
+  content: attr(data-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.18);
+  color: inherit;
+}
+
+.language-menu ul {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  left: auto;
+  margin: 0;
+  min-width: 200px;
+  background-color: var(--content-bg);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 12px;
+  list-style: none;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 5;
+}
+
+.language-menu:hover ul,
+.language-menu:focus-within ul {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.language-menu ul li {
+  margin: 0;
+}
+
+.language-menu ul a {
+  text-decoration: none;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-700);
+  background-color: rgba(15, 23, 42, 0.06);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.lang-option:hover,
+.lang-option:focus {
+  background-color: rgba(37, 99, 235, 0.12);
+  color: var(--accent-500);
+  transform: translateY(-1px);
+}
+
+.lang-option.is-active {
+  background-color: var(--accent-500);
+  color: #ffffff;
+  box-shadow: var(--glow-primary);
+}
+
+.lang-option.is-active:hover,
+.lang-option.is-active:focus {
+  background-color: var(--accent-500);
+  color: #ffffff;
+  transform: none;
+ main
 }
 
 .language-menu__trigger .flag-icon {
