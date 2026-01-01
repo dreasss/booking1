@@ -23,6 +23,11 @@ class Packager
             throw new InvalidArgumentException('A valid project root is required.');
         }
 
+        $root = realpath($root);
+        if ($root === false) {
+            throw new InvalidArgumentException('Unable to resolve project root.');
+        }
+
         if ($distDir === null) {
             $distDir = $root . DIRECTORY_SEPARATOR . 'dist';
         }
@@ -80,9 +85,19 @@ class Packager
             $zipPathName = str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
 
             if ($fileInfo->isDir()) {
-                $zip->addEmptyDir($zipPathName);
+                if (!$fileInfo->isReadable()) {
+                    throw new RuntimeException('Unreadable directory: ' . $fileInfo->getPathname());
+                }
+                if (!$zip->addEmptyDir($zipPathName)) {
+                    throw new RuntimeException('Unable to add directory to archive: ' . $zipPathName);
+                }
             } else {
-                $zip->addFile($fileInfo->getPathname(), $zipPathName);
+                if (!$fileInfo->isReadable()) {
+                    throw new RuntimeException('Unreadable file: ' . $fileInfo->getPathname());
+                }
+                if (!$zip->addFile($fileInfo->getPathname(), $zipPathName)) {
+                    throw new RuntimeException('Unable to add file to archive: ' . $zipPathName);
+                }
             }
         }
 
